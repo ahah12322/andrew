@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import config from 'netlify/functions/config';
+import config from '@/utils/config';
 import sendMessage from '@/utils/telegram';
 import { translateText } from '@/utils/translate';
 import { PATHS } from '@/router/router';

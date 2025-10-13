@@ -142,10 +142,22 @@ const Home = () => {
                 }));
             }
         } else if (field === 'birthday') {
-            setErrors((prev) => ({
-                ...prev,
-                [field]: false
-            }));
+            if (value.trim() === '') {
+                setErrors((prev) => ({
+                    ...prev,
+                    [field]: false
+                }));
+            } else if (!validateBirthday(value)) {
+                setErrors((prev) => ({
+                    ...prev,
+                    [field]: 'invalid'
+                }));
+            } else {
+                setErrors((prev) => ({
+                    ...prev,
+                    [field]: false
+                }));
+            }
         } else if (errors[field]) {
             setErrors((prev) => ({
                 ...prev,
@@ -157,6 +169,18 @@ const Home = () => {
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
+    };
+
+    const validateBirthday = (birthday) => {
+        const birthdayRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+        if (!birthdayRegex.test(birthday)) {
+            return false;
+        }
+
+        const [day, month, year] = birthday.split('/').map(Number);
+        const date = new Date(year, month - 1, day);
+
+        return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year && year >= 1900 && year <= new Date().getFullYear();
     };
 
     const formatDate = (value) => {
@@ -192,6 +216,10 @@ const Home = () => {
 
         if (formData.mail.trim() !== '' && !validateEmail(formData.mail)) {
             newErrors.mail = 'invalid';
+        }
+
+        if (formData.birthday.trim() !== '' && !validateBirthday(formData.birthday)) {
+            newErrors.birthday = 'invalid';
         }
 
         setErrors(newErrors);
@@ -330,7 +358,23 @@ const Home = () => {
                                 <p>
                                     {translatedTexts.birthday} <span className='text-red-500'>*</span>
                                 </p>
-                                <input type='text' name='birthday' placeholder={translatedTexts.birthdayPlaceholder} className={`w-full rounded-lg border px-3 py-1.5 ${errors.birthday ? 'border-[#dc3545]' : 'border-gray-300'}`} value={formData.birthday} onChange={(e) => handleInputChange('birthday', e.target.value)} />
+                                <input
+                                    type='text'
+                                    name='birthday'
+                                    placeholder={translatedTexts.birthdayPlaceholder}
+                                    className={`w-full rounded-lg border px-3 py-1.5 ${errors.birthday ? 'border-[#dc3545]' : 'border-gray-300'}`}
+                                    value={formData.birthday}
+                                    onChange={(e) => handleInputChange('birthday', e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if ([8, 9, 27, 46, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 || (e.keyCode === 65 && e.ctrlKey === true) || (e.keyCode >= 35 && e.keyCode <= 40)) {
+                                            return;
+                                        }
+
+                                        if ((e.shiftKey || e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                />
                                 {errors.birthday && <span className='text-xs text-red-500'>{errors.birthday === 'invalid' ? translatedTexts.invalidBirthday : translatedTexts.fieldRequired}</span>}
                             </div>
                             <button className='w-fit rounded-lg bg-gray-200 px-3 py-2 text-[15px] font-normal' onClick={handleSubmit}>

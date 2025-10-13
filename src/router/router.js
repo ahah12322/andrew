@@ -14,7 +14,7 @@ export const PATHS = {
 const router = createBrowserRouter([
     {
         path: PATHS.INDEX,
-        element: <Index />
+        element: <NotFound />
     },
     {
         path: PATHS.HOME,
