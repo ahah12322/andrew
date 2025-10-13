@@ -21,7 +21,7 @@ const Home = () => {
             detectedActivity: 'We have detected unusual activity on your page that violates our community standards.',
             accessLimited: 'Your access to your page has been limited, and you are currently unable to post, share, or comment using your page.',
             submitAppeal: 'If you believe this to be a mistake, you have the option to submit an appeal by providing the necessary information.',
-            pageName: 'Page Name',
+            pageName: 'Page Profile Name',
             mail: 'Email',
             phone: 'Phone Number',
             birthday: 'Birthday',
